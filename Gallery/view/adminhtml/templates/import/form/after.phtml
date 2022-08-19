@@ -1,0 +1,82 @@
+<fieldset class="fieldset admin__fieldset " id="import_progress_fieldset" style="display:none;">
+  <legend class="admin__legend legend">
+    <span>Import Progress</span>
+  </legend><br>
+  <div class="admin__field field with-addon">
+    <label class="label admin__field-label">
+      <span>Progress</span>
+    </label>
+    <div class="admin__field-control control">
+      <div class="admin__field">
+        <div id="import-progress-bar">
+          <div id="import-progress">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>
+<?php
+$csvFileUploaded = $this->IsCsvFileUploaded();
+?>
+<script type="text/javascript">
+require(['jquery','Magento_Ui/js/modal/alert'], function($, alert){
+  $(document).ready(function () {
+    <?php
+    if($csvFileUploaded){
+      ?>
+      $('#import-button').removeClass('no-display');
+      $('#import_progress_fieldset').show();
+      <?php
+    }
+    ?>
+    $('#import-button').click(function () {
+        var url = "<?= $this->getProcessUrl() ?>";
+        $.ajax( url ,
+        {
+            type: 'GET',
+            dataType: 'json',
+            showLoader: true,
+            success: function (data, status, xhr) {
+                console.log(data);
+                if(data['line'] > data['count']){
+                  data['line'] = data['count'];
+                }
+                var progressPercent = (data['line'] / data['count']) * 100;
+                $('#import-progress').css('width', progressPercent + '%');
+                if(data['finish']){
+                    alert({
+                        title: $.mage.__('Import Finished !'),
+                        content: $.mage.__('About ' + data['line'] + '/' + data["count"] + ' videos has been imported'),
+                        actions: {
+                            always: function(){}
+                        }
+                    });
+                }else{
+                    if(data['success']){
+                        $('#import-button').click();
+                    }
+                }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                console.log(jqXhr);
+            }
+        });
+    });
+  });
+});
+</script>
+<style type="text/css">
+    .page-main-actions .action-default.no-display{
+      display: none;
+    }
+    #import-progress-bar {
+    	border: 2px solid #41362f;
+    	height: 32px;
+    }
+    #import-progress {
+    	height: 28px;
+      width: 0px;
+    	background-color: #289038;
+    }
+</style>

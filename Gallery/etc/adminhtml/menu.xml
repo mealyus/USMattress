@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+    	 <add id="USMattress_Gallery::youtube_videos_import" title="Import Youtube Videos/CMS Block IDs" translate="title" module="USMattress_Gallery" sortOrder="100" resource="USMattress_Gallery::youtube_videos_import" action="usmattress_gallery/index/import"  parent="Magento_Backend::system_convert"/>
+    </menu>
+</config>
